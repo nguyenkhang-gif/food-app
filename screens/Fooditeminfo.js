@@ -6,6 +6,7 @@ const Fooditeminfo = ({navigation,route}) => {
   return (
     <View style={{flex:1,backgroundColor:'gray'}}>
       <Text>{info.item}</Text>
+      <Text>{info.foodinfo}</Text>
     </View>
   )
 }
