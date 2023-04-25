@@ -3,14 +3,19 @@ import React, { useEffect, useState } from 'react'
 import { productsData } from '../db';
 import { AntDesign } from '@expo/vector-icons';
 
-const SeachProbuctScreen = ({navigation}) => {
+const SeachProbuctScreen = ({navigation,route}) => {
     //đếm số lượng sản phẩm tìm được
     const [resultsCount, setResultsCount] = useState(0)
     // all item
     const [allItem, setAllItem] = useState([])
+    
+
+    // sử lý lấy "link" lấy giá trị search
+    const [searchInput,setSearchInput]= useState('')
 
     useEffect(() => {
         setAllItem(productsData)
+        setSearchInput(route.params.searchValue)
     }, [])
 
 
@@ -27,7 +32,7 @@ const SeachProbuctScreen = ({navigation}) => {
                         <AntDesign name="left" size={24} color="black" />
                     </TouchableOpacity>
                     <View style={{ marginLeft: 20 }}>
-                        <TextInput style={{ fontSize: 20 }} value='Mỳ trộn' placeholder='tìm' />
+                        <TextInput style={{ fontSize: 20,textDecorationLine:'none' }} value={searchInput} onChangeText={(text)=>{setSearchInput(text)}} placeholder='tìm' />
                     </View>
 
                 </View>

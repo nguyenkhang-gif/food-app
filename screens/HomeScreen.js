@@ -23,15 +23,11 @@ const HomeScreen = ({ navigation }) => {
     }, [])
     // fetch data
 
-    const getUrl = (ID) => {
-        let tempdata
-        foodData.forEach(item => {
-            if (item.id == ID) {
-                tempdata = item.imgurl
-            }
-        })
-        return tempdata
-    }
+    // sử lý đi đến screen search 
+    const [searchValue,SetSearchValue] = useState('')
+
+
+
     return (
         <SafeAreaView style={{ flex: 1 }}>
             {/* container all */}
@@ -64,7 +60,7 @@ const HomeScreen = ({ navigation }) => {
                 <View style={{ marginLeft: 30, marginTop: 20, marginRight: 30, borderColor: 'black', borderWidth: 1, borderRadius: 30 }}>
                     <View style={{ position: 'relative' }}>
                         <AntDesign name="search1" size={24} color="black" style={{ position: 'absolute', top: 10, left: 4 }} />
-                        <TextInput onSubmitEditing={(e) => { alert('submit search bar') }} placeholder='tìm' style={{ paddingLeft: 40, padding: 8 }} />
+                        <TextInput onSubmitEditing={(e) => { navigation.navigate('SearchProduct',{searchValue}) }} placeholder='tìm' style={{ paddingLeft: 40, padding: 8 }} onChangeText={(e)=>{SetSearchValue(e)}} />
                     </View>
                 </View>
                 {/* end of search bar */}
@@ -132,12 +128,12 @@ const HomeScreen = ({ navigation }) => {
                                         style={{ width: 100, height: 100, resizeMode: 'cover', borderRadius: 50, top: -40 }}
                                     />
                                     <View style={{ top: -25 }}>
-                                        <Text style={{ fontSize: 18, fontWeight: 650 }}>
+                                        <Text style={{ fontSize: 18, fontWeight: '600' }}>
                                             {item.Name}
                                         </Text>
                                     </View>
                                     <View style={{ top: -15 }}>
-                                        <Text style={{ fontSize: 18, fontWeight: 700, color: '#FA4A0C' }}>
+                                        <Text style={{ fontSize: 18, fontWeight: '700', color: '#FA4A0C' }}>
                                             20000 đ
                                         </Text>
                                     </View>

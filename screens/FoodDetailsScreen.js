@@ -4,14 +4,17 @@ import { AntDesign } from '@expo/vector-icons';
 import { productsData } from '../db';
 import { ScrollView } from 'react-native';
 
-const FoodDetailsScreen = () => {
+const FoodDetailsScreen = ({navigation, route }) => {
     // sử lý khi nhấn nút tim thích or not
     const [isFav, setIsfav] = useState(true)
     const [itemInfo, setItemInfo] = useState()
-    const ID = 0 // xem như đây là prop sẽ truyen2 vào 
     const fetchData = () => {
         setItemInfo(productsData[ID])
     }
+    
+    
+    // lấy "link" 
+    const ID = route.params.ID // xem như đây là prop sẽ truyen2 vào 
 
 
     useEffect(() => {
@@ -22,7 +25,7 @@ const FoodDetailsScreen = () => {
             <View style={{ marginTop: 25, height: '100%' }}>
                 {/* Header */}
                 <View style={{ flexDirection: 'row', height: 24, marginTop: 20, marginBottom: 20, position: 'relative', justifyContent: 'space-between', paddingHorizontal: 20 }}>
-                    <TouchableOpacity >
+                    <TouchableOpacity onPress={()=>navigation.goBack()} >
                         <AntDesign name="left" size={24} color="black" />
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => { isFav ? setIsfav(false) : setIsfav(true) }}>

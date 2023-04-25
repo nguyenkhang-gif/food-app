@@ -54,7 +54,7 @@ const CartScreen = ({ navigation }) => {
                                         />
                                     </View>
                                     <View>
-                                        <TouchableOpacity >
+                                        <TouchableOpacity onPress={()=>{navigation.navigate('Fooditemdetails',{ID:item.id})}} >
 
                                             <Text style={{ fontSize: 20, fontWeight: '700' }}>
                                                 {item.Name}
