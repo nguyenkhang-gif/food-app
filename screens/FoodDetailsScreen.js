@@ -19,7 +19,7 @@ const FoodDetailsScreen = () => {
     }, [])
     return (
         // <SafeAreaView>
-            <View style={{ marginTop: 25, height: '100%' }}>
+            <View style={{ marginTop: 30, height: '100%' }}>
                 {/* Header */}
                 <View style={{ flexDirection: 'row', height: 24, marginTop: 20, marginBottom: 20, position: 'relative', justifyContent: 'space-between', paddingHorizontal: 20 }}>
                     <TouchableOpacity >
