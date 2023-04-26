@@ -2,54 +2,60 @@ import { FlatList, Image, SafeAreaView, ScrollView, StyleSheet, Text, TouchableO
 import React, { useEffect, useState } from 'react'
 import { AntDesign } from '@expo/vector-icons';
 // import { AntDesign } from '@expo/vector-icons';
-import { productsData,allcartitem } from '../db.js'
-const CartScreen = ({ navigation,route }) => {
+import { productsData, allcartitem } from '../db.js'
+const CartScreen = ({ navigation, route }) => {
 
     const [mainData, setMainData] = useState([])
-    
-    // sử lý lấy thông tin từ cart để render
-    const getimgurlwithID=(ID)=>{
-        let temp
-        productsData.forEach(item=>{
-            if(item.id==ID){
-                temp=item.imgurl
-            }
-        })
-        return temp
-    }
-    const getNameWithID=(ID)=>{
-        let temp
-        productsData.forEach(item=>{
-            if(item.id==ID){
-                temp=item.Name
-            }
-        })
-        return temp
-    }
-    const getPriceWithID=(ID)=>{
-        let temp
-        productsData.forEach(item=>{
-            if(item.id==ID){
-                temp=item.Price
-            }
-        })
-        return temp
-    }
 
+    // sử lý lấy thông tin từ cart để render
+    const getimgurlwithID = (ID) => {
+        let temp
+        productsData.forEach(item => {
+            if (item.id == ID) {
+                temp = item.imgurl
+            }
+        })
+        return temp
+    }
+    const getNameWithID = (ID) => {
+        let temp
+        productsData.forEach(item => {
+            if (item.id == ID) {
+                temp = item.Name
+            }
+        })
+        return temp
+    }
+    const getPriceWithID = (ID) => {
+        let temp
+        productsData.forEach(item => {
+            if (item.id == ID) {
+                temp = item.Price
+            }
+        })
+        return temp
+    }
+    const getTotalPRice = ()=>{
+        let final=0
+        mainData.forEach(item=>{
+            final+=getPriceWithID(item.itemID)*item.amount
+        })
+        return final
+    }
     // sử lý thêm số lượng or giảm số lượng
-    const updateAmount = (method,ID)=>{
+    const updateAmount = (method, ID) => {
         let tempArray = [...mainData]
-        if(method=='-'){
-            tempArray.forEach(item=>{
-                if(item.itemID==ID){
+        if (method == '-') {
+            tempArray.forEach(item => {
+                if (item.itemID == ID) {
                     item.amount--
                 }
             })
             setMainData(tempArray)
         }
-        if(method=='+'){
-            tempArray.forEach(item=>{
-                if(item.itemID==ID){
+        if (method == '+') {
+            tempArray.forEach(item => {
+                if (item.itemID == ID) {
                     item.amount++
                 }
             })
@@ -99,7 +105,7 @@ const CartScreen = ({ navigation,route }) => {
                                 ]}>
                                     <View style={{ height: 75, width: 75, marginHorizontal: 20, borderRadius: 70, overflow: 'hidden' }}>
                                         <Image
-                                            source={getimgurlwithID(item.itemID) }
+                                            source={getimgurlwithID(item.itemID)}
                                             style={{ resizeMode: 'cover', height: 75, width: 75 }}
                                         />
                                     </View>
@@ -116,9 +122,9 @@ const CartScreen = ({ navigation,route }) => {
                                     </View>
                                     {/* amount */}
                                     <View style={{ position: 'absolute', flexDirection: 'row', height: 30, width: 80, backgroundColor: '#FA4A0C', bottom: 20, right: 15, borderRadius: 20 }}>
-                                        <TouchableOpacity style={{ flex: 1 }} onPress={()=>{updateAmount('-',item.itemID)}}>
+                                        <TouchableOpacity style={{ flex: 1 }} onPress={() => { updateAmount('-', item.itemID) }}>
                                             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-                                                <Text style={{ fontSize: 20,textAlign:'center', color: 'white', fontWeight: '800' }}>
+                                                <Text style={{ fontSize: 20, textAlign: 'center', color: 'white', fontWeight: '800' }}>
                                                     -
                                                 </Text>
                                             </View>
@@ -132,7 +138,7 @@ const CartScreen = ({ navigation,route }) => {
                                             </View>
                                         </TouchableOpacity>
 
-                                        <TouchableOpacity style={{ flex: 1 }} onPress={()=>{updateAmount('+',item.itemID)}}>
+                                        <TouchableOpacity style={{ flex: 1 }} onPress={() => { updateAmount('+', item.itemID) }}>
                                             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
                                                 <Text style={{ fontSize: 20, color: 'white', fontWeight: '600' }}>
                                                     +
@@ -143,9 +149,10 @@ const CartScreen = ({ navigation,route }) => {
 
                                     {/* end of amount */}
                                     {/* remove one item */}
-                                    <View style={{position:'absolute',right:7,top:6}}>
+                                    <View style={{ position: 'absolute', right: 7, top: 6 }}>
+
                                         <TouchableOpacity>
-                                        <AntDesign name="close" size={24} color="black" />
+                                            <AntDesign name="close" size={24} color="black" />
                                         </TouchableOpacity>
                                     </View>
                                     {/* end of remove one item */}
@@ -166,7 +173,17 @@ const CartScreen = ({ navigation,route }) => {
                 </View>
             }
             <View style={{ height: 100, width: '100%', position: 'absolute', bottom: 10, justifyContent: 'center', alignItems: 'center' }}>
-                <TouchableOpacity>
+                {/* total */}
+                <View style={{flexDirection:'row',justifyContent:'space-between'}}>
+                    <Text style={{fontSize:20,fontWeight:'600',paddingHorizontal:10}}>
+                        Tổng tiền:
+                    </Text>
+                    <Text style={{fontSize:20,fontWeight:'600',}}>
+                        {mainData? getTotalPRice():0} đ
+                    </Text>
+                </View>
+                {/* end of total */}
+                <TouchableOpacity onPress={() => { navigation.navigate('Checkout', { data: mainData }) }}>
                     <View style={[{ width: 300, height: 50, backgroundColor: '#FA4A0C', borderRadius: 40, justifyContent: 'center', alignItems: 'center' }, styles.buttonShadowEff]}>
                         <Text style={{ color: '#F6F6F9', fontSize: 18, fontWeight: 600 }}>
                             Thanh toán
