@@ -1,14 +1,64 @@
 import { FlatList, Image, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { AntDesign } from '@expo/vector-icons';
-import { productsData } from '../db.js'
-const CartScreen = ({ navigation }) => {
+// import { AntDesign } from '@expo/vector-icons';
+import { productsData,allcartitem } from '../db.js'
+const CartScreen = ({ navigation,route }) => {
 
     const [mainData, setMainData] = useState([])
+    
+    // sử lý lấy thông tin từ cart để render
+    const getimgurlwithID=(ID)=>{
+        let temp
+        productsData.forEach(item=>{
+            if(item.id==ID){
+                temp=item.imgurl
+            }
+        })
+        return temp
+    }
+    const getNameWithID=(ID)=>{
+        let temp
+        productsData.forEach(item=>{
+            if(item.id==ID){
+                temp=item.Name
+            }
+        })
+        return temp
+    }
+    const getPriceWithID=(ID)=>{
+        let temp
+        productsData.forEach(item=>{
+            if(item.id==ID){
+                temp=item.Price
+            }
+        })
+        return temp
+    }
 
+    // sử lý thêm số lượng or giảm số lượng
+    const updateAmount = (method,ID)=>{
+        let tempArray = [...mainData]
+        if(method=='-'){
+            tempArray.forEach(item=>{
+                if(item.itemID==ID){
+                    item.amount--
+                }
+            })
+            setMainData(tempArray)
+        }
+        if(method=='+'){
+            tempArray.forEach(item=>{
+                if(item.itemID==ID){
+                    item.amount++
+                }
+            })
+            setMainData(tempArray)
+        }
+    }
 
     useEffect(() => {
-        setMainData(productsData)
+        setMainData(allcartitem)
     }, [])
 
     return (
@@ -33,7 +83,7 @@ const CartScreen = ({ navigation }) => {
                     {/* main cart where all item in cart  */}
                     <FlatList
                         data={mainData}
-                        renderItem={({ item,index }) => {
+                        renderItem={({ item, index }) => {
                             return (
                                 <View style={[{
                                     position: 'relative',
@@ -45,44 +95,44 @@ const CartScreen = ({ navigation }) => {
                                     alignItems: 'center',
                                     borderRadius: 20
                                 },
-                               index== mainData.length-1?{marginBottom:100}:null
+                                index == mainData.length - 1 ? { marginBottom: 100 } : null
                                 ]}>
                                     <View style={{ height: 75, width: 75, marginHorizontal: 20, borderRadius: 70, overflow: 'hidden' }}>
                                         <Image
-                                            source={item.imgurl}
+                                            source={getimgurlwithID(item.itemID) }
                                             style={{ resizeMode: 'cover', height: 75, width: 75 }}
                                         />
                                     </View>
                                     <View>
-                                        <TouchableOpacity onPress={()=>{navigation.navigate('Fooditemdetails',{ID:item.id})}} >
+                                        <TouchableOpacity onPress={() => { navigation.navigate('Fooditemdetails', { ID: item.itemID }) }} >
 
                                             <Text style={{ fontSize: 20, fontWeight: '700' }}>
-                                                {item.Name}
+                                                {getNameWithID(item.itemID)}
                                             </Text>
                                             <Text style={{ fontSize: 17, fontWeight: '600', color: '#FA4A0C' }}>
-                                                {item.Price} đ
+                                                {getPriceWithID(item.itemID)} đ
                                             </Text>
                                         </TouchableOpacity>
                                     </View>
                                     {/* amount */}
-                                    <View style={{ position: 'absolute', flexDirection: 'row', height: 30, width: 60, backgroundColor: '#FA4A0C', bottom: 20, right: 15, borderRadius: 20 }}>
-                                        <TouchableOpacity style={{ flex: 1 }}>
+                                    <View style={{ position: 'absolute', flexDirection: 'row', height: 30, width: 80, backgroundColor: '#FA4A0C', bottom: 20, right: 15, borderRadius: 20 }}>
+                                        <TouchableOpacity style={{ flex: 1 }} onPress={()=>{updateAmount('-',item.itemID)}}>
                                             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-                                                <Text style={{ fontSize: 20, color: 'white', fontWeight: '700' }}>
+                                                <Text style={{ fontSize: 20,textAlign:'center', color: 'white', fontWeight: '800' }}>
                                                     -
                                                 </Text>
                                             </View>
                                         </TouchableOpacity>
-                                        <TouchableOpacity style={{ flex: 1 }}>
+                                        <TouchableOpacity style={{ flex: 1 }} >
                                             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
                                                 {/* ghi số vào */}
                                                 <Text style={{ fontSize: 20, color: 'white', fontWeight: '600' }}>
-                                                    0
+                                                    {item.amount}
                                                 </Text>
                                             </View>
                                         </TouchableOpacity>
 
-                                        <TouchableOpacity style={{ flex: 1 }}>
+                                        <TouchableOpacity style={{ flex: 1 }} onPress={()=>{updateAmount('+',item.itemID)}}>
                                             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
                                                 <Text style={{ fontSize: 20, color: 'white', fontWeight: '600' }}>
                                                     +
@@ -92,6 +142,13 @@ const CartScreen = ({ navigation }) => {
                                     </View>
 
                                     {/* end of amount */}
+                                    {/* remove one item */}
+                                    <View style={{position:'absolute',right:7,top:6}}>
+                                        <TouchableOpacity>
+                                        <AntDesign name="close" size={24} color="black" />
+                                        </TouchableOpacity>
+                                    </View>
+                                    {/* end of remove one item */}
                                 </View>
                             )
                         }}

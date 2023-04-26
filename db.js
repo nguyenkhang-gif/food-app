@@ -134,6 +134,23 @@ export const allcartitem = [
         ID:1,//người mua 
         itemID:1,//item của người mua
         amount:1//số lượng
-        
-    }
+    },
+    {
+        ID:1,//người mua 
+        itemID:3,//item của người mua
+        amount:5//số lượng
+    },
+    {
+        ID:1,//người mua 
+        itemID:4,//item của người mua
+        amount:2//số lượng
+    },
+
 ]
+
+
+
+// check out
+
+
+

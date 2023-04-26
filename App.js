@@ -12,6 +12,7 @@ import { Entypo } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import CheckoutScreen from './screens/CheckoutScreen';
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -56,6 +57,7 @@ export default function App() {
       }}>
         {/* làm footer cho screen nào ? */}
         <Stack.Screen name='main' component={BottomTab}/>
+        <Stack.Screen name="Checkout" component={CheckoutScreen} />
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="Loginregisterscreen" component={LoginRegisterScreen} />
         <Stack.Screen name="SearchProduct" component={SeachProbuctScreen} />

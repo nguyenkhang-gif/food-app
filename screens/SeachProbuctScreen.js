@@ -3,19 +3,19 @@ import React, { useEffect, useState } from 'react'
 import { productsData } from '../db';
 import { AntDesign } from '@expo/vector-icons';
 
-const SeachProbuctScreen = ({navigation,route}) => {
+const SeachProbuctScreen = ({ navigation, route }) => {
     //đếm số lượng sản phẩm tìm được
     const [resultsCount, setResultsCount] = useState(0)
     // all item
     const [allItem, setAllItem] = useState([])
-    
+
 
     // sử lý lấy "link" lấy giá trị search
-    const [searchInput,setSearchInput]= useState('')
+    const [searchInput, setSearchInput] = useState('')
 
     useEffect(() => {
         setAllItem(productsData)
-        setSearchInput(route.params.searchValue)
+        setSearchInput(route.params.searchValue ? route.params.searchValue : '')
     }, [])
 
 
@@ -28,11 +28,11 @@ const SeachProbuctScreen = ({navigation,route}) => {
             <View style={{ marginTop: 20, height: '100%' }}>
                 {/* HEader start */}
                 <View style={{ flexDirection: 'row', marginTop: 20, marginLeft: 20, marginBottom: 20 }}>
-                    <TouchableOpacity onPress={()=>{navigation.goBack()}}>
+                    <TouchableOpacity onPress={() => { navigation.goBack() }}>
                         <AntDesign name="left" size={24} color="black" />
                     </TouchableOpacity>
                     <View style={{ marginLeft: 20 }}>
-                        <TextInput style={{ fontSize: 20,textDecorationLine:'none' }} value={searchInput} onChangeText={(text)=>{setSearchInput(text)}} placeholder='tìm' />
+                        <TextInput style={{ fontSize: 20, textDecorationLine: 'none' }} value={searchInput} onChangeText={(text) => { setSearchInput(text) }} placeholder='tìm' />
                     </View>
 
                 </View>
@@ -67,28 +67,30 @@ const SeachProbuctScreen = ({navigation,route}) => {
                         data={allItem}
                         renderItem={({ item, index }) => {
                             return (
-                                <View style={[{ marginTop: 40, height: 160, width: 140, borderRadius: 15, backgroundColor: 'white', justifyContent: 'space-evenly', alignItems: 'center', margin: 10 }, styles.shadowEff, index % 2 == 1 ? styles.oddnumitem :null, index==allItem.length-1?styles.lastITemStyle:null]}>
-                                    <View style={{ width: 100, height: 100, resizeMode: 'cover',overflow:'hidden',borderRadius:50, top: -40 }}>
-                                        <Image
-                                            source={item.imgurl}
-                                            style={{ width: 100, height: 100, resizeMode: 'cover' }}
-                                        />
+                                <TouchableOpacity onPress={() => { navigation.navigate('Fooditemdetails', { ID: item.id }) }}>
+                                    <View style={[{ marginTop: 40, height: 160, width: 140, borderRadius: 15, backgroundColor: 'white', justifyContent: 'space-evenly', alignItems: 'center', margin: 10 }, styles.shadowEff, index % 2 == 1 ? styles.oddnumitem : null, index == allItem.length - 1 ? styles.lastITemStyle : null]}>
+                                        <View style={{ width: 100, height: 100, resizeMode: 'cover', overflow: 'hidden', borderRadius: 50, top: -40 }}>
+                                            <Image
+                                                source={item.imgurl}
+                                                style={{ width: 100, height: 100, resizeMode: 'cover' }}
+                                            />
+                                        </View>
+                                        <View style={{ top: -25, justifyContent: 'center' }}>
+                                            <Text style={{ fontSize: 18, fontWeight: '600', justifyContent: 'center', alignItems: 'center' }}>
+                                                {item.Name}
+                                            </Text>
+                                        </View>
+                                        <View style={{ top: -15 }}>
+                                            <Text style={{ fontSize: 18, fontWeight: '700', color: '#FA4A0C' }}>
+                                                20000 đ
+                                            </Text>
+                                        </View>
                                     </View>
-                                    <View style={{ top: -25 ,justifyContent:'center'}}>
-                                        <Text style={{ fontSize: 18, fontWeight: '600',justifyContent:'center',alignItems:'center' }}>
-                                            {item.Name}
-                                        </Text>
-                                    </View>
-                                    <View style={{ top: -15 }}>
-                                        <Text style={{ fontSize: 18, fontWeight: '700', color: '#FA4A0C' }}>
-                                            20000 đ
-                                        </Text>
-                                    </View>
-                                </View>
+                                </TouchableOpacity>
                             )
                         }}
                         numColumns={2}
-                        style={{ paddingLeft: 30, paddingTop: 30}}
+                        style={{ paddingLeft: 30, paddingTop: 30 }}
                         keyExtractor={(item) => item.id}
                     />
 
@@ -123,7 +125,7 @@ const styles = StyleSheet.create({
     oddnumitem: {
         marginTop: 80
     },
-    lastITemStyle:{
-        marginBottom:200
+    lastITemStyle: {
+        marginBottom: 200
     }
 })

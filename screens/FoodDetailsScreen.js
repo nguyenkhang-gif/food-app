@@ -9,7 +9,7 @@ const FoodDetailsScreen = ({navigation, route }) => {
     const [isFav, setIsfav] = useState(true)
     const [itemInfo, setItemInfo] = useState()
     const fetchData = () => {
-        setItemInfo(productsData[ID])
+        setItemInfo(productsData[ID-1])
     }
     
     
@@ -65,7 +65,7 @@ const FoodDetailsScreen = ({navigation, route }) => {
 
                                     <View style={{ width: 300 }}>
                                         <Text style={{ fontWeight: '700', fontSize: 16 }}>
-                                            Thông tin của món ăn
+                                            chính sách giao hàng tận nhà
                                         </Text>
                                         <Text style={{ minHeight: 60, fontSize: 18 }} >
                                             Thức ăn luôn nóng khi đến tay khách hàng, nếu không sẽ hoàn trả 200% giá tiền món ăn

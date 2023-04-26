@@ -24,7 +24,7 @@ const HomeScreen = ({ navigation }) => {
     // fetch data
 
     // sử lý đi đến screen search 
-    const [searchValue,SetSearchValue] = useState('')
+    const [searchValue, SetSearchValue] = useState('')
 
 
 
@@ -38,7 +38,7 @@ const HomeScreen = ({ navigation }) => {
                     <TouchableOpacity>
                         <Ionicons name="menu" size={34} color="black" onPress={() => { alert('handle menu click') }} />
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={()=>{navigation.navigate('Cartscreen')}}>
+                    <TouchableOpacity onPress={() => { navigation.navigate('Cartscreen') }}>
                         <Feather name="shopping-cart" size={24} color="black" style={{ marginTop: 7 }} />
                     </TouchableOpacity>
                 </View>
@@ -60,7 +60,7 @@ const HomeScreen = ({ navigation }) => {
                 <View style={{ marginLeft: 30, marginTop: 20, marginRight: 30, borderColor: 'black', borderWidth: 1, borderRadius: 30 }}>
                     <View style={{ position: 'relative' }}>
                         <AntDesign name="search1" size={24} color="black" style={{ position: 'absolute', top: 10, left: 4 }} />
-                        <TextInput onSubmitEditing={(e) => { navigation.navigate('SearchProduct',{searchValue}) }} placeholder='tìm' style={{ paddingLeft: 40, padding: 8 }} onChangeText={(e)=>{SetSearchValue(e)}} />
+                        <TextInput onSubmitEditing={(e) => { navigation.navigate('SearchProduct', { searchValue }) }} placeholder='tìm' style={{ paddingLeft: 40, padding: 8 }} onChangeText={(e) => { SetSearchValue(e) }} />
                     </View>
                 </View>
                 {/* end of search bar */}
@@ -97,7 +97,7 @@ const HomeScreen = ({ navigation }) => {
                         right: 20,
                         top: -20
                     }}>
-                        <TouchableOpacity onPress={()=>{navigation.navigate('SearchProduct')}}>
+                        <TouchableOpacity onPress={() => { navigation.navigate('SearchProduct',{searchValue:''}) }}>
                             <Text style={{ color: '#FA4A0C', fontWeight: '600' }}>see more</Text>
                         </TouchableOpacity>
                     </View>
@@ -122,22 +122,25 @@ const HomeScreen = ({ navigation }) => {
                         data={foodData}
                         renderItem={({ item }) => {
                             return (
-                                <View style={[{ marginTop: 40, height: 160, width: 140, borderRadius: 15, backgroundColor: 'white', justifyContent: 'space-evenly', alignItems: 'center', margin: 20 }, styles.shadowEff]}>
-                                    <Image
-                                        source={item.imgurl}
-                                        style={{ width: 100, height: 100, resizeMode: 'cover', borderRadius: 50, top: -40 }}
-                                    />
-                                    <View style={{ top: -25 }}>
-                                        <Text style={{ fontSize: 18, fontWeight: '600' }}>
-                                            {item.Name}
-                                        </Text>
+                                <TouchableOpacity onPress={()=>{navigation.navigate('Fooditemdetails',{ID:item.id})}}>
+
+                                    <View style={[{ marginTop: 40, height: 160, width: 140, borderRadius: 15, backgroundColor: 'white', justifyContent: 'space-evenly', alignItems: 'center', margin: 20 }, styles.shadowEff]}>
+                                        <Image
+                                            source={item.imgurl}
+                                            style={{ width: 100, height: 100, resizeMode: 'cover', borderRadius: 50, top: -40 }}
+                                        />
+                                        <View style={{ top: -25 }}>
+                                            <Text style={{ fontSize: 18, fontWeight: '600' }}>
+                                                {item.Name}
+                                            </Text>
+                                        </View>
+                                        <View style={{ top: -15 }}>
+                                            <Text style={{ fontSize: 18, fontWeight: '700', color: '#FA4A0C' }}>
+                                                20000 đ
+                                            </Text>
+                                        </View>
                                     </View>
-                                    <View style={{ top: -15 }}>
-                                        <Text style={{ fontSize: 18, fontWeight: '700', color: '#FA4A0C' }}>
-                                            20000 đ
-                                        </Text>
-                                    </View>
-                                </View>
+                                </TouchableOpacity>
                             )
                         }}
                         horizontal={true}
