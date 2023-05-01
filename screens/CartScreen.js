@@ -183,7 +183,7 @@ const CartScreen = ({ navigation, route }) => {
                     </Text>
                 </View>
                 {/* end of total */}
-                <TouchableOpacity onPress={() => { navigation.navigate('Checkout', { data: mainData }) }}>
+                <TouchableOpacity onPress={() => { navigation.navigate('Checkout', {mainData,total:getTotalPRice() }) }}>
                     <View style={[{ width: 300, height: 50, backgroundColor: '#FA4A0C', borderRadius: 40, justifyContent: 'center', alignItems: 'center' }, styles.buttonShadowEff]}>
                         <Text style={{ color: '#F6F6F9', fontSize: 18, fontWeight: 600 }}>
                             Thanh toán

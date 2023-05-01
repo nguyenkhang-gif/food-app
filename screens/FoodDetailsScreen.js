@@ -3,6 +3,8 @@ import React, { useEffect, useState } from 'react'
 import { AntDesign } from '@expo/vector-icons';
 import { productsData } from '../db';
 import { ScrollView } from 'react-native';
+import { getAllProduct } from '../apicalls';
+import { getimurlwithID } from '../Funstions';
 
 const FoodDetailsScreen = ({navigation, route }) => {
     // sử lý khi nhấn nút tim thích or not
@@ -12,14 +14,22 @@ const FoodDetailsScreen = ({navigation, route }) => {
         setItemInfo(productsData[ID-1])
     }
     
-    
+    const [mainData,setMainData]= useState([])
     // lấy "link" 
     const ID = route.params.ID // xem như đây là prop sẽ truyen2 vào 
 
 
     useEffect(() => {
         fetchData()
+        getAllProduct([mainData,setMainData])
     }, [])
+    useEffect(() => {
+        mainData.forEach(item=>{
+            if(item.ID==ID){
+                setItemInfo(item)
+            }
+        })
+    }, [mainData])
     return (
         // <SafeAreaView>
             <View style={{ marginTop: 25, height: '100%' }}>
@@ -42,7 +52,7 @@ const FoodDetailsScreen = ({navigation, route }) => {
                             <View style={{ width: '100%', marginTop: 10, alignItems: 'center' }}>
                                 <View style={[{ backgroundColor: 'white', borderRadius: 125, width: 250, height: 250 ,overflow:'hidden'}, styles.shadowEff]}>
                                     <Image
-                                        source={itemInfo.imgurl}
+                                        source={getimurlwithID(itemInfo.ID)}
                                         style={{ width: 250, height: 250, resizeMode: 'cover' }}
                                     />
                                 </View>
@@ -50,7 +60,7 @@ const FoodDetailsScreen = ({navigation, route }) => {
                                     {itemInfo.Name}
                                 </Text>
                                 <Text style={{ marginTop: 20, fontSize: 25, fontWeight: '700', color: '#FA4A0C' }}>
-                                    {itemInfo.Price}đ
+                                    {itemInfo.price}đ
                                 </Text>
                                 {/* container policy */}
                                 <View>
@@ -59,7 +69,7 @@ const FoodDetailsScreen = ({navigation, route }) => {
                                             Thông tin của món ăn
                                         </Text>
                                         <Text style={{ minHeight: 60, fontSize: 18 }} >
-                                            {itemInfo.FoodDes}
+                                            {itemInfo.des}
                                         </Text>
                                     </View>
 

@@ -5,20 +5,33 @@ import { Feather } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
 import { Image } from 'react-native';
 import { productsData } from '../db';
+import axios from 'axios';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { getAllProduct } from '../apicalls';
 
 
 const HomeScreen = ({ navigation }) => {
 
 
+    const getimurlwithID = (ID) => {
+        let temp
+        productsData.forEach(item => {
+            if (item.id == ID) {
+                temp = item.imgurl
+            }
+        })
+        return temp
+    }
+
     const [foodData, setFoodData] = useState([])
+
     useEffect(() => {
 
+        getAllProduct([foodData, setFoodData])
 
-        // 
-        setFoodData(productsData)
+        // setFoodData(productsData)
         // fetchFoodData()
     }, [])
     // fetch data
@@ -97,7 +110,7 @@ const HomeScreen = ({ navigation }) => {
                         right: 20,
                         top: -20
                     }}>
-                        <TouchableOpacity onPress={() => { navigation.navigate('SearchProduct',{searchValue:''}) }}>
+                        <TouchableOpacity onPress={() => { navigation.navigate('SearchProduct', { searchValue: '' }) }}>
                             <Text style={{ color: '#FA4A0C', fontWeight: '600' }}>see more</Text>
                         </TouchableOpacity>
                     </View>
@@ -122,11 +135,11 @@ const HomeScreen = ({ navigation }) => {
                         data={foodData}
                         renderItem={({ item }) => {
                             return (
-                                <TouchableOpacity onPress={()=>{navigation.navigate('Fooditemdetails',{ID:item.id})}}>
+                                <TouchableOpacity onPress={() => { navigation.navigate('Fooditemdetails', { ID: item.ID }) }}>
 
                                     <View style={[{ marginTop: 40, height: 160, width: 140, borderRadius: 15, backgroundColor: 'white', justifyContent: 'space-evenly', alignItems: 'center', margin: 20 }, styles.shadowEff]}>
                                         <Image
-                                            source={item.imgurl}
+                                            source={getimurlwithID(item.ID)}
                                             style={{ width: 100, height: 100, resizeMode: 'cover', borderRadius: 50, top: -40 }}
                                         />
                                         <View style={{ top: -25 }}>
@@ -136,7 +149,7 @@ const HomeScreen = ({ navigation }) => {
                                         </View>
                                         <View style={{ top: -15 }}>
                                             <Text style={{ fontSize: 18, fontWeight: '700', color: '#FA4A0C' }}>
-                                                20000 đ
+                                                {item.price} đ
                                             </Text>
                                         </View>
                                     </View>
@@ -144,7 +157,7 @@ const HomeScreen = ({ navigation }) => {
                             )
                         }}
                         horizontal={true}
-                        keyExtractor={(item) => item.id}
+                        keyExtractor={(item) => item.ID}
                     />
                     {/* end of one product */}
                 </View>

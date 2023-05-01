@@ -1,3 +1,12 @@
+export const userInfo=[
+    {
+        ID:1,
+        Name:"Nguyên Khang",
+        email:'nguyennguyenkhang915@gmail.com',
+        PhoneNum:'0902932998'
+    }
+]
+ 
 export const productsData = [
     {
         id: 1,
@@ -146,6 +155,38 @@ export const allcartitem = [
         amount:2//số lượng
     },
 
+]
+
+
+export const alluserAdress = [
+    {
+        ID:1,
+        des:'TPHCM,quận 12, hẻm XXX'
+    },
+    {
+        ID:1,
+        des:'TPHCM,quận 12, hẻm XXX'
+    },
+    {
+        ID:1,
+        des:'TPHCM,quận 12, hẻm XXX'
+    },
+    {
+        ID:1,
+        des:'TPHCM,quận 12, hẻm XXX'
+    },
+    {
+        ID:1,
+        des:'TPHCM,quận 12, hẻm XXX'
+    },
+    {
+        ID:1,
+        des:'TPHCM,quận 12, hẻm XXX'
+    },
+    {
+        ID:1,
+        des:'TPHCM,quận 12, hẻm XXX'
+    },
 ]
 
 
