@@ -13,6 +13,8 @@ import { Ionicons } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import CheckoutScreen from './screens/CheckoutScreen';
+import { AuthContextProvider } from './context/authcontext';
+import EditUserInfoScreen from './screens/EditUserInfoScreen';
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -51,6 +53,8 @@ const BottomTab = () => {
 }
 export default function App() {
   return (
+    <AuthContextProvider>
+    
     <NavigationContainer>
       <Stack.Navigator screenOptions={{
         headerShown: false
@@ -64,9 +68,11 @@ export default function App() {
         <Stack.Screen name="Fooditemdetails" component={FoodDetailsScreen} />
         <Stack.Screen name="Checkout" component={CheckoutScreen} />
         <Stack.Screen name="Profile" component={ProfileScreen} />
+        <Stack.Screen name="editProfile" component={EditUserInfoScreen} />
       </Stack.Navigator>
-
     </NavigationContainer>
+      
+    </AuthContextProvider>
   );
 }
 

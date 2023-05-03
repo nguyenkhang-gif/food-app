@@ -1,13 +1,73 @@
 import { View, Text, Image, TouchableOpacity, StyleSheet, TextInput, Platform, KeyboardAvoidingView, ScrollView } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
+import { AsyncStorage } from 'react-native';
+import { validateEmail } from '../Funstions';
+import { register } from '../apicalls';
+import { AuthContext } from '../context/authcontext';
 
-const LoginRegisterScreen = () => {
+
+const LoginRegisterScreen = ({navigation}) => {
+
+  const [tempCookies, setTempCookies] = useState('this')
+
+
+  // sử lý login
+  const {curentUser,login} = useContext(AuthContext)
+  // sử lý lấy "cookies"
+  const _storeData = async () => {
+    try {
+      await AsyncStorage.setItem(
+        'token',
+        'cookies',
+      );
+    } catch (error) {
+      // Error saving data
+    }
+  };
+
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [repassword, setRePassword] = useState('')
+
+  const _retrieveData = async () => {
+    try {
+      const value = await AsyncStorage.getItem('token');
+      if (value !== null) {
+        // We have data!!
+        console.log(value);
+      }
+    } catch (error) {
+      // Error retrieving data
+    }
+  };
+
+  // sử lý logic login sign up 
+  const handleValidateUser = (email, password, repassword) => {
+    //  vlidate 
+    let result = true
+    if(!validateEmail(email)){
+      // console.log('email good')
+      result=false
+    }
+    if(!(password==repassword&&password!=''&&repassword!='')){
+      // console.log('pass is good')
+      result=false
+    }
+    if(result){
+      return true
+    }else{
+      alert('mật khẩu or email chưa đúng thử lại ')
+      return false
+    }
+  }
 
   // sử lý nhấn tab login logout
   const [LoginlogOut, setLoginLogout] = useState([true, false])
 
   useEffect(() => {
     setLoginLogout([true, false])
+    // _storeData()
+    console.log(curentUser)
   }, [])
   return (
     <View style={{ top: 20, flex: 1 }}>
@@ -34,7 +94,7 @@ const LoginRegisterScreen = () => {
           <TouchableOpacity onPress={() => { setLoginLogout([true, false]) }}>
             <View style={[{ height: 50, width: 140, justifyContent: 'center', alignItems: 'center' }, LoginlogOut[0] ? styles.BorderBottom : null]}>
               <Text style={{ fontSize: 20, fontWeight: 600 }}>
-                Login
+                Login:{tempCookies ? tempCookies : 'nothig'}
               </Text>
             </View>
           </TouchableOpacity>
@@ -66,8 +126,12 @@ const LoginRegisterScreen = () => {
             borderBottomWidth: 2
           }}>
             <TextInput
+              name='email'
               style={{ height: 20 }}
               placeholder='your email'
+              onChangeText={
+                text => { setEmail(text); }
+              }
             />
           </View>
         </KeyboardAvoidingView>
@@ -91,12 +155,13 @@ const LoginRegisterScreen = () => {
               style={{ height: 20 }}
               placeholder='your password'
               secureTextEntry={true}
+              onChangeText={text => { setPassword(text) }}
             />
           </View>
         </KeyboardAvoidingView>
 
       </ScrollView> : null}
-      {LoginlogOut[1] ? <ScrollView style={{ flex: 1, marginHorizontal: 30, marginTop: 30 }}>
+      {LoginlogOut[1] ? <ScrollView style={{ flex: 1, marginHorizontal: 30, marginTop: 30, height: 400 }}>
         <KeyboardAvoidingView behavior='padding' style={{ marginLeft: 15, marginTop: 5 }}>
           <Text style={{
             fontSize: 17,
@@ -114,6 +179,7 @@ const LoginRegisterScreen = () => {
             <TextInput
               style={{ height: 20 }}
               placeholder='your email'
+              onChangeText={text => { setEmail(text) }}
             />
           </View>
         </KeyboardAvoidingView>
@@ -137,6 +203,7 @@ const LoginRegisterScreen = () => {
               style={{ height: 20 }}
               placeholder='your password'
               secureTextEntry={true}
+              onChangeText={text => { setPassword(text) }}
             />
           </View>
         </KeyboardAvoidingView>
@@ -160,6 +227,7 @@ const LoginRegisterScreen = () => {
               style={{ height: 20 }}
               placeholder='your password'
               secureTextEntry={true}
+              onChangeText={text => { setRePassword(text) }}
             />
           </View>
         </KeyboardAvoidingView>
@@ -169,7 +237,7 @@ const LoginRegisterScreen = () => {
       {/* container button  */}
       {LoginlogOut[0] ?
         <View style={{ justifyContent: 'center', flex: 1, alignItems: 'center' }}>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => {login({email,password})? navigation.navigate('main'):alert('sai tài khoản hoặc mật khẩu') }}>
             <View style={[{ width: 300, height: 50, backgroundColor: '#FA4A0C', borderRadius: 40, justifyContent: 'center', alignItems: 'center' }, styles.buttonShadowEff]}>
               <Text style={{ color: '#F6F6F9', fontSize: 18, fontWeight: 600 }}>
                 Login
@@ -177,16 +245,16 @@ const LoginRegisterScreen = () => {
             </View>
           </TouchableOpacity>
         </View>
-        : LoginlogOut[1]?
-        <View style={{ justifyContent: 'center',padding:40, alignItems: 'center' }}>
-        <TouchableOpacity>
-          <View style={[{ width: 300, height: 50, backgroundColor: '#FA4A0C', borderRadius: 40, justifyContent: 'center', alignItems: 'center' }, styles.buttonShadowEff]}>
-            <Text style={{ color: '#F6F6F9', fontSize: 18, fontWeight: 600 }}>
-              Sign in
-            </Text>
-          </View>
-        </TouchableOpacity>
-      </View>:null
+        : LoginlogOut[1] ?
+          <View style={{ justifyContent: 'center', flex: 1, alignItems: 'center', maxHeight: 100 }}>
+            <TouchableOpacity onPress={() => { handleValidateUser(email, password, repassword)? register({email, password}) :null }}>
+              <View style={[{ width: 300, height: 50, backgroundColor: '#FA4A0C', borderRadius: 40, justifyContent: 'center', alignItems: 'center' }, styles.buttonShadowEff]}>
+                <Text style={{ color: '#F6F6F9', fontSize: 18, fontWeight: 600 }}>
+                  Sign in
+                </Text>
+              </View>
+            </TouchableOpacity>
+          </View> : null
       }
       {/* end of container button  */}
       <Text>LoginRegisterScreen</Text>
