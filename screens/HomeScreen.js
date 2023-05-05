@@ -1,5 +1,5 @@
 import { View, Text, SafeAreaView, TouchableOpacity, TextInput, StyleSheet, FlatList } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Ionicons } from '@expo/vector-icons';
 import { Feather } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
@@ -10,10 +10,13 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { getAllProduct } from '../apicalls';
+import { AuthContext } from '../context/authcontext';
+// import { Value } from 'react-native-reanimated';
 
 
 const HomeScreen = ({ navigation }) => {
 
+    const { curentUser } = useContext(AuthContext)
 
     const getimurlwithID = (ID) => {
         let temp
@@ -49,7 +52,16 @@ const HomeScreen = ({ navigation }) => {
                 {/* topheader section */}
                 <View style={{ height: 80, width: '100%', padding: 20, justifyContent: 'space-between', flexDirection: 'row' }}>
                     <TouchableOpacity>
-                        <Ionicons name="menu" size={34} color="black" onPress={() => { alert('handle menu click') }} />
+                        {curentUser ?
+                            <View style={{ flexDirection: 'row', alignItems: 'center',marginTop:5 }}>
+                                <Ionicons name="person" size={30} color="black" />
+                                <View>
+                                    <Text style={{fontWeight:'500'}}>@{curentUser[0].Username}</Text>
+                                    <Text>{curentUser[0].Name}</Text>
+                                </View>
+                            </View>
+                            : <Ionicons name="menu" size={24} color="black" onPress={() => { alert('handle menu click') }} />
+                        }
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => { navigation.navigate('Cartscreen') }}>
                         <Feather name="shopping-cart" size={24} color="black" style={{ marginTop: 7 }} />

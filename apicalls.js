@@ -32,7 +32,7 @@ export const register = async (data) => {
                 // setdata(res.data)
             })
     } catch (err) {
-
+        console.log(err)
     }
 }
 export const updateUserInfo = async (data) => {
@@ -77,6 +77,98 @@ export const createPhoneNum = async (ID, desc) => {//ID là user ID desc là sđ
             .then((res) => {
                 console.log("phone num has been added")
                 // setdata(res.data)
+            })
+    } catch (err) {
+
+    }
+}
+
+
+
+// fav option
+export const createFav = async (userID,itemID) => {//ID là user ID desc là sđt của user 
+    try {
+        axios.post(`http://10.0.2.2//food-app-api/fav/create.php`, { userID: userID, itemID: itemID })
+            .then((res) => {
+                console.log("fav num has been added")
+                // setdata(res.data)
+            })
+    } catch (err) {
+
+    }
+}
+export const getFav = async (userID,[data, setdata]) => {//ID là user ID desc là sđt của user 
+    
+    try {
+        axios.post(`http://10.0.2.2//food-app-api/fav/read.php`, { userID: userID})
+            .then((res) => {
+                console.log("fav num has been calls: ", res.data)
+                if(res.data!='none'){
+                    console.log('there is a res')
+                    setdata(res.data)
+                }
+                // setdata(res.data)
+            })
+    } catch (err) {
+
+    }
+}
+export const deleteFav = async (userID,itemID) => {//ID là user ID desc là sđt của user 
+    try {
+        axios.post(`http://10.0.2.2//food-app-api/fav/delete.php`, { userID: userID, itemID: itemID })
+            .then((res) => {
+                console.log("fav num has been delete")
+                // setdata(res.data)
+            })
+    } catch (err) {
+
+    }
+}
+
+
+
+
+
+//  cart
+export const createCart = async (userID,itemID) => {//ID là user ID desc là sđt của user 
+    try {
+        axios.post(`http://10.0.2.2//food-app-api/cart/create.php`, { userID: userID, itemID: itemID })
+            .then((res) => {
+                console.log("fav num has been added")
+                // setdata(res.data)
+            })
+    } catch (err) {
+
+    }
+}
+export const deleteCart = async (userID,itemID) => {//ID là user ID desc là sđt của user 
+    try {
+        axios.post(`http://10.0.2.2//food-app-api/cart/delete.php`, { userID: userID, itemID: itemID })
+            .then((res) => {
+                console.log("fav num has been added")
+                // setdata(res.data)
+            })
+    } catch (err) {
+
+    }
+}
+export const updateCart = async (userID,itemID,amount) => {//ID là user ID desc là sđt của user 
+    try {
+        axios.post(`http://10.0.2.2//food-app-api/cart/update.php`, { userID: userID, itemID: itemID,amount:amount })
+            .then((res) => {
+                console.log("fav num has been added")
+                // setdata(res.data)
+            })
+    } catch (err) {
+
+    }
+}
+export const getCart = async (userID,[data,setdata]) => {//ID là user ID desc là sđt của user 
+    try {
+        axios.post(`http://10.0.2.2//food-app-api/cart/read.php`, { userID: userID})
+            .then((res) => {
+                console.log("fav num has been added")
+                if(res.data!='none')setdata(res.data)
             })
     } catch (err) {
 

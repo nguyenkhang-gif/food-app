@@ -46,7 +46,7 @@ const LoginRegisterScreen = ({navigation}) => {
     //  vlidate 
     let result = true
     if(!validateEmail(email)){
-      // console.log('email good')
+      console.log('email good')
       result=false
     }
     if(!(password==repassword&&password!=''&&repassword!='')){
@@ -56,6 +56,8 @@ const LoginRegisterScreen = ({navigation}) => {
     if(result){
       return true
     }else{
+      console.log('password:',password)
+      console.log('repassword:',repassword)
       alert('mật khẩu or email chưa đúng thử lại ')
       return false
     }

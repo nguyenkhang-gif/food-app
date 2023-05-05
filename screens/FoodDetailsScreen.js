@@ -1,27 +1,58 @@
 import { Image, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { AntDesign } from '@expo/vector-icons';
 import { productsData } from '../db';
 import { ScrollView } from 'react-native';
-import { getAllProduct } from '../apicalls';
+import { createCart, createFav, deleteFav, getAllProduct, getCart, getFav, updateCart } from '../apicalls';
 import { getimurlwithID } from '../Funstions';
+import { AuthContext } from '../context/authcontext';
 
 const FoodDetailsScreen = ({navigation, route }) => {
     // sử lý khi nhấn nút tim thích or not
-    const [isFav, setIsfav] = useState(true)
+    const [isFav, setIsfav] = useState(false)
     const [itemInfo, setItemInfo] = useState()
     const fetchData = () => {
         setItemInfo(productsData[ID-1])
     }
-    
+    const {curentUser} = useContext(AuthContext)
     const [mainData,setMainData]= useState([])
+    const [allFav,setAllFav]= useState([])
     // lấy "link" 
     const ID = route.params.ID // xem như đây là prop sẽ truyen2 vào 
+    // sử lý fav khi click 
+    const handleFavClick = ()=>{
+        if(!isFav){
+            if(curentUser) {createFav(curentUser[0].id,ID)}
+            setIsfav(true)
+        }
+        if(isFav) {
+            setIsfav(false)
+            if(curentUser)deleteFav(curentUser[0].id,ID)
+        }
 
+    }
+
+
+
+    // sử lý check all fav của 1 user 
+
+    useEffect(()=>{
+        // console.log('debug')
+        if(curentUser){ allFav.forEach(item=>{
+            if(item.itemID==ID)setIsfav(true)
+        })}
+    },[allFav])
+
+    useEffect(()=>{
+        if(curentUser)getFav(curentUser[0].id,[allFav,setAllFav])
+    },[curentUser])
 
     useEffect(() => {
         fetchData()
         getAllProduct([mainData,setMainData])
+        // if(curentUser)getFav(curentUser[0].id,[allFav,setAllFav])
+        // console.log("itemID",ID)
+        // console.log("userID",curentUser[0].id)
     }, [])
     useEffect(() => {
         mainData.forEach(item=>{
@@ -30,6 +61,48 @@ const FoodDetailsScreen = ({navigation, route }) => {
             }
         })
     }, [mainData])
+
+    const [tempData,setTempData]= useState([])
+    // sử lý thêm cart
+    useEffect(()=>{
+        if(curentUser){
+            getCart(curentUser[0].id,[tempData,setTempData])
+        }
+    },[])
+     // sử lý thêm vào giỏ hàng 
+     const handleAddCart = ()=>{
+        if(!curentUser){
+            alert('bạn chưa đăng nhập')
+        }else {
+            // nếu chưa có sản phẩm trong cart 
+            if(!tempData.length){
+                createCart(curentUser[0].id,ID)
+                // setTempData([{ID:curentUser[0].id,itemID:ID,amount:1}])
+                getCart(curentUser[0].id,[tempData,setTempData])
+                alert('thêm thành công')
+            }
+            if(tempData.length){
+                let isInCart = false;
+                tempData.forEach(item=>{
+                    if(item.itemID==ID){
+                        console.log('update: ',item.amount+1)
+                        updateCart(curentUser[0].id,ID,Number(item.amount)+1)
+                        getCart(curentUser[0].id,[tempData,setTempData])
+                        alert('đã thêm 1 sản phẩm cùng tên vào giỏ hàng')
+                        isInCart=true
+                    }
+                    if(!isInCart){
+                        createCart(curentUser[0].id,ID)
+                        getCart(curentUser[0].id,[tempData,setTempData])
+                        
+                        alert('đã thêm 1 sản phẩm  vào giỏ hàng')
+                    }
+                })
+            }
+        }
+    }
+
+
     return (
         // <SafeAreaView>
             <View style={{ marginTop: 25, height: '100%' }}>
@@ -38,8 +111,9 @@ const FoodDetailsScreen = ({navigation, route }) => {
                     <TouchableOpacity onPress={()=>navigation.goBack()} >
                         <AntDesign name="left" size={24} color="black" />
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => { isFav ? setIsfav(false) : setIsfav(true) }}>
-                        {isFav ? <AntDesign name="hearto" size={24} color="black" /> : <AntDesign name="heart" size={24} color="black" />}
+                    {/* isFav ? setIsfav(false); : setIsfav(true)  */}
+                    <TouchableOpacity onPress={() => { handleFavClick()}}>
+                        {!isFav ? <AntDesign name="hearto" size={24} color="black" /> : <AntDesign name="heart" size={24} color="black" />}
                     </TouchableOpacity>
                 </View>
                 {/* end of Header */}
@@ -87,7 +161,7 @@ const FoodDetailsScreen = ({navigation, route }) => {
 
                         {/* button thêm vào  */}
                         <View style={{ alignItems: 'center',marginVertical:20,marginBottom:100 }}>
-                            <TouchableOpacity>
+                            <TouchableOpacity onPress={()=>{handleAddCart()}}>
                                 <View style={[{ width: 300, height: 50, backgroundColor: '#FA4A0C', borderRadius: 40, justifyContent: 'center', alignItems: 'center' }, styles.buttonShadowEff]}>
                                     <Text style={{ color: '#F6F6F9', fontSize: 18, fontWeight: 600 }}>
                                         Thêm vào giỏ hàng

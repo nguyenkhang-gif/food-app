@@ -4,9 +4,9 @@ import { AntDesign } from '@expo/vector-icons';
 // import { AntDesign } from '@expo/vector-icons';
 import { productsData, allcartitem } from '../db.js'
 const CartScreen = ({ navigation, route }) => {
-
+    
     const [mainData, setMainData] = useState([])
-
+ 
     // sử lý lấy thông tin từ cart để render
     const getimgurlwithID = (ID) => {
         let temp
