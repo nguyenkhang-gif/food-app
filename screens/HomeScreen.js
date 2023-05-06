@@ -9,14 +9,14 @@ import axios from 'axios';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { getAllProduct } from '../apicalls';
+import { getAllProduct, getCart } from '../apicalls';
 import { AuthContext } from '../context/authcontext';
 // import { Value } from 'react-native-reanimated';
 
 
 const HomeScreen = ({ navigation }) => {
 
-    const { curentUser } = useContext(AuthContext)
+    const { curentUser,refresh} = useContext(AuthContext)
 
     const getimurlwithID = (ID) => {
         let temp
@@ -42,7 +42,10 @@ const HomeScreen = ({ navigation }) => {
     // sử lý đi đến screen search 
     const [searchValue, SetSearchValue] = useState('')
 
-
+    const [allCart,setAllCart]= useState([])
+    useEffect(()=>{
+        if(curentUser)getCart(curentUser[0].id,[allCart,setAllCart])
+    },[curentUser,refresh])
 
     return (
         <SafeAreaView style={{ flex: 1 }}>
@@ -63,6 +66,11 @@ const HomeScreen = ({ navigation }) => {
                             : <Ionicons name="menu" size={24} color="black" onPress={() => { alert('handle menu click') }} />
                         }
                     </TouchableOpacity>
+                    <View style={{position:'absolute',right:5,top:18,borderRadius:20,width:30,justifyContent:'center',alignItems:'center'}}>
+                        <Text style={{fontSize:20,fontWeight:'700',color:"#FA4A0C",zIndex:2}}>
+                            {allCart.length}
+                        </Text>
+                    </View>
                     <TouchableOpacity onPress={() => { navigation.navigate('Cartscreen') }}>
                         <Feather name="shopping-cart" size={24} color="black" style={{ marginTop: 7 }} />
                     </TouchableOpacity>

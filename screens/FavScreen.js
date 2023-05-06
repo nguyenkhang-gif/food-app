@@ -3,11 +3,12 @@ import React, { useContext, useEffect, useState } from 'react'
 import { AntDesign } from '@expo/vector-icons';
 // import { AntDesign } from '@expo/vector-icons';
 import { productsData, allcartitem } from '../db.js'
-import { deleteCart, getAllProduct, updateCart } from '../apicalls.js';
+import { deleteCart, deleteFav, getAllProduct, getFav, updateCart } from '../apicalls.js';
 import { getCart } from '../apicalls.js';
 import { AuthContext } from '../context/authcontext.js';
-const CartScreen = ({ navigation, route }) => {
+const FavScreen = ({ navigation, route }) => {
     const {curentUser} = useContext(AuthContext)
+    const {refresh} = useContext(AuthContext)
     const [mainData, setMainData] = useState([])
     const [productsData2,setProductData2] = useState([])
     // sử lý lấy thông tin từ cart để render
@@ -39,47 +40,27 @@ const CartScreen = ({ navigation, route }) => {
         })
         return temp
     }
-    const getTotalPRice = ()=>{
-        let final=0
-        mainData.forEach(item=>{
-            final+=getPriceWithID(item.itemID)*item.amount
-        })
-        return final
-    }
+   
     // sử lý thêm số lượng or giảm số lượng
-    const updateAmount = (method, ID) => {
-        let tempArray = [...mainData]
-        if (method == '-') {
-            tempArray.forEach(item => {
-                if (item.itemID == ID) {
-                    const temp = item.amount--
-                    updateCart(curentUser[0].id,ID,Number(temp)-1)
-                }
-            })
-            setMainData(tempArray)
-        }
-        if (method == '+') {
-            tempArray.forEach(item => {
-                if (item.itemID == ID) {
-                    // item.amount++
-                    const temp = item.amount++
-                    updateCart(curentUser[0].id,ID,Number(temp)+1)
-                }
-            })
-            setMainData(tempArray)
-        }
-    }
+   
 
     useEffect(() => {
         // setMainData(allcartitem)
-        getCart(curentUser[0].id,[mainData, setMainData])
-        getAllProduct([productsData2,setProductData2])
-    }, [])
+        if(curentUser){
 
+            getFav(curentUser[0].id,[mainData, setMainData])
+            getAllProduct([productsData2,setProductData2])
+        }
+        }, [curentUser])
+    
+    useEffect(()=>{
+        console.log('refesh')
+        if(curentUser)getFav(curentUser[0].id,[mainData, setMainData])
+    },[refresh])
     // handle xóa item
     const handleDelete = (itemID)=>{
-        deleteCart(curentUser[0].id,itemID)
-        getCart(curentUser[0].id,[mainData, setMainData])
+        deleteFav(curentUser[0].id,itemID)
+        getFav(curentUser[0].id,[mainData, setMainData])
     }
 
     return (
@@ -91,7 +72,7 @@ const CartScreen = ({ navigation, route }) => {
                 </TouchableOpacity>
                 <View>
                     <Text style={{ fontSize: 20, fontWeight: '700' }}>
-                        Cart
+                        Fav
                     </Text>
                 </View>
             </View>
@@ -99,7 +80,7 @@ const CartScreen = ({ navigation, route }) => {
 
 
 
-            {mainData ?
+            {mainData&&curentUser ?
                 <View style={{ flex: 1 }}>
                     {/* main cart where all item in cart  */}
                     <FlatList
@@ -136,31 +117,7 @@ const CartScreen = ({ navigation, route }) => {
                                         </TouchableOpacity>
                                     </View>
                                     {/* amount */}
-                                    <View style={{ position: 'absolute', flexDirection: 'row', height: 30, width: 80, backgroundColor: '#FA4A0C', bottom: 20, right: 15, borderRadius: 20 }}>
-                                        <TouchableOpacity style={{ flex: 1 }} onPress={() => { updateAmount('-', item.itemID) }}>
-                                            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-                                                <Text style={{ fontSize: 20, textAlign: 'center', color: 'white', fontWeight: '800' }}>
-                                                    -
-                                                </Text>
-                                            </View>
-                                        </TouchableOpacity>
-                                        <TouchableOpacity style={{ flex: 1 }} >
-                                            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-                                                {/* ghi số vào */}
-                                                <Text style={{ fontSize: 20, color: 'white', fontWeight: '600' }}>
-                                                    {item.amount}
-                                                </Text>
-                                            </View>
-                                        </TouchableOpacity>
-
-                                        <TouchableOpacity style={{ flex: 1 }} onPress={() => { updateAmount('+', item.itemID) }}>
-                                            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-                                                <Text style={{ fontSize: 20, color: 'white', fontWeight: '600' }}>
-                                                    +
-                                                </Text>
-                                            </View>
-                                        </TouchableOpacity>
-                                    </View>
+                                    
 
                                     {/* end of amount */}
                                     {/* remove one item */}
@@ -179,37 +136,29 @@ const CartScreen = ({ navigation, route }) => {
                     {/* end of main cart where all item in cart  */}
                 </View>
 
-                :
+                :!curentUser?
                 <View style={{ flex: 1 }}>
-                    <Text>
-                        không tìm thấy sản phẩm hoặc bạn chưa chọn sản phẩm
-                    </Text>
-                </View>
-            }
-            <View style={{ height: 100, width: '100%', position: 'absolute', bottom: 10, justifyContent: 'center', alignItems: 'center' }}>
-                {/* total */}
-                <View style={{flexDirection:'row',justifyContent:'space-between'}}>
-                    <Text style={{fontSize:20,fontWeight:'600',paddingHorizontal:10}}>
-                        Tổng tiền:
-                    </Text>
-                    <Text style={{fontSize:20,fontWeight:'600',}}>
-                        {mainData? getTotalPRice():0} đ
-                    </Text>
-                </View>
-                {/* end of total */}
-                <TouchableOpacity onPress={() => { navigation.navigate('Checkout', {mainData,total:getTotalPRice() }) }}>
-                    <View style={[{ width: 300, height: 50, backgroundColor: '#FA4A0C', borderRadius: 40, justifyContent: 'center', alignItems: 'center' }, styles.buttonShadowEff]}>
-                        <Text style={{ color: '#F6F6F9', fontSize: 18, fontWeight: 600 }}>
-                            Thanh toán
-                        </Text>
+                    <View style={{ marginTop: 25, height: '100%' }}>
+                     {/* Header */}
+                     
+                    {/* end of Header */}
+                    <View>
+                    <TouchableOpacity onPress={()=>{navigation.navigate('Loginregisterscreen')}}>
+                            <View style={[{ width: 300, height: 50, backgroundColor: '#FA4A0C', borderRadius: 40, justifyContent: 'center', alignItems: 'center',marginTop:20 }, styles.buttonShadowEff]}>
+                                <Text style={{ color: '#F6F6F9', fontSize: 18, fontWeight: 600 }}>
+                                    login
+                                </Text>
+                            </View>
+                        </TouchableOpacity>
                     </View>
-                </TouchableOpacity>
-            </View>
-
+                </View>
+                </View>:null
+            }
+           
         </View>
     )
 }
 
-export default CartScreen
+export default FavScreen
 
 const styles = StyleSheet.create({})

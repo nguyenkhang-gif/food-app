@@ -145,7 +145,7 @@ export const deleteCart = async (userID,itemID) => {//ID là user ID desc là s�
     try {
         axios.post(`http://10.0.2.2//food-app-api/cart/delete.php`, { userID: userID, itemID: itemID })
             .then((res) => {
-                console.log("fav num has been added")
+                console.log("cart num has been delete")
                 // setdata(res.data)
             })
     } catch (err) {

@@ -96,9 +96,9 @@ export const AuthContextProvider = ({ children }) => {
         console.log("data shoudl be store :",curentUser)
         // console.log('this is the shit')
     }, [curentUser])
-
+    const [refresh,setRefresh]= useState(false)
   
-    return <AuthContext.Provider value={{ curentUser, login, logout,setCurentUser }}>
+    return <AuthContext.Provider value={{ curentUser, login, logout,setCurentUser,refresh,setRefresh }}>
         {children}
     </AuthContext.Provider>
 }

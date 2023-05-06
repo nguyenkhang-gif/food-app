@@ -15,6 +15,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import CheckoutScreen from './screens/CheckoutScreen';
 import { AuthContextProvider } from './context/authcontext';
 import EditUserInfoScreen from './screens/EditUserInfoScreen';
+import FavScreen from './screens/FavScreen';
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -47,7 +48,7 @@ const BottomTab = () => {
       <Tab.Screen name='homescreen' component={HomeScreen}/>
       <Tab.Screen name="Profile" component={ProfileScreen} />
       {/* chưa làm phần này  */}
-      <Tab.Screen name='favscreen' component={CartScreen}/>
+      <Tab.Screen name='favscreen' component={FavScreen}/>
     </Tab.Navigator>
   )
 }

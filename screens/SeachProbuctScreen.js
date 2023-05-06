@@ -2,21 +2,73 @@ import { FlatList, Image, SafeAreaView, StyleSheet, Text, TextInput, TouchableOp
 import React, { useEffect, useState } from 'react'
 import { productsData } from '../db';
 import { AntDesign } from '@expo/vector-icons';
+import { getAllProduct } from '../apicalls';
 
 const SeachProbuctScreen = ({ navigation, route }) => {
     //đếm số lượng sản phẩm tìm được
     const [resultsCount, setResultsCount] = useState(0)
     // all item
     const [allItem, setAllItem] = useState([])
+    const [allItemTemp, setAllItemTemp] = useState([])
 
 
     // sử lý lấy "link" lấy giá trị search
     const [searchInput, setSearchInput] = useState('')
 
     useEffect(() => {
-        setAllItem(productsData)
+        getAllProduct([allItem, setAllItem])
+        getAllProduct([allItemTemp, setAllItemTemp])
+        // setAllItem(productsData)
         setSearchInput(route.params.searchValue ? route.params.searchValue : '')
     }, [])
+    useEffect(()=>{
+        if(allItem.length&&allItemTemp.length&&searchInput.length)handleSubmitInput();
+        console.log(searchInput)
+    },[allItemTemp,searchInput])
+    // const [productsData2,setProductData2] = useState([])
+    // sử lý lấy thông tin từ cart để render
+    const getimgurlwithID = (ID) => {
+        let temp
+        productsData.forEach(item => {
+            if (item.id == ID) {
+                temp = item.imgurl
+            }
+        })
+        return temp
+    }
+    const getNameWithID = (ID) => {
+        let temp
+        allItem.forEach(item => {
+            if (item.ID == ID) {
+                // console.log('name',item)
+                temp = item.Name
+            }
+        })
+        return temp
+    }
+    const getPriceWithID = (ID) => {
+        let temp
+        allItem.forEach(item => {
+            if (item.ID == ID) {
+                temp = item.price
+            }
+        })
+        return temp
+    }
+
+    
+    const handleSubmitInput = ()=>{
+        let tempData = []
+        allItemTemp.forEach(item=>{
+            let tempString=item.Name
+            if(tempString.includes(searchInput)){
+                // console.log('find shtng')
+                tempData.push(item)
+            }
+        })
+        setAllItem(tempData)
+    
+    }
 
 
     useEffect(() => {
@@ -31,13 +83,12 @@ const SeachProbuctScreen = ({ navigation, route }) => {
                     <TouchableOpacity onPress={() => { navigation.goBack() }}>
                         <AntDesign name="left" size={24} color="black" />
                     </TouchableOpacity>
-                    <View style={{ marginLeft: 20 }}>
-                        <TextInput style={{ fontSize: 20, textDecorationLine: 'none' }} value={searchInput} onChangeText={(text) => { setSearchInput(text) }} placeholder='tìm' />
+                    <View style={{ marginLeft: 20,flex:1}}>
+                        <TextInput onSubmitEditing={()=>{console.log('submit search input');handleSubmitInput()}}  style={{ fontSize: 20, textDecorationLine: 'none' }} value={searchInput} onChangeText={(text) => { setSearchInput(text) }} placeholder='tìm' />
                     </View>
-
                 </View>
                 {/* HEader end */}
-                {/* results count  */}
+                {/* results count  */} 
                 <View style={{ justifyContent: 'center', alignItems: 'center' }}>
                     <Text style={{ fontSize: 20, fontWeight: '700' }}>
                         Tìm được {String(resultsCount)} kết quả
@@ -46,54 +97,39 @@ const SeachProbuctScreen = ({ navigation, route }) => {
                 {/* end of results count  */}
                 {/* all product item  */}
                 <SafeAreaView style={{}}>
-                    {/* one item  */}
-                    {/* <View style={[{ marginTop: 40, height: 160, width: 140, borderRadius: 15, backgroundColor: 'white', justifyContent: 'space-evenly', alignItems: 'center', margin: 20 }, styles.shadowEff]}>
-                        <Image
-                            source={require('../assets/hambuger.png')}
-                            style={{ width: 100, height: 100, resizeMode: 'cover', top: -40 }}
+                    {allItem ?
+                        <FlatList
+                            data={allItem}
+                            renderItem={({ item, index }) => {
+                                return (
+                                    <TouchableOpacity onPress={() => { navigation.navigate('Fooditemdetails', { ID: item.ID }) }}>
+                                        <View style={[{ marginTop: 40, height: 160, width: 140, borderRadius: 15, backgroundColor: 'white', justifyContent: 'space-evenly', alignItems: 'center', margin: 10 }, styles.shadowEff, index % 2 == 1 ? styles.oddnumitem : null, index == allItem.length - 1 ? styles.lastITemStyle : null]}>
+                                            <View style={{ width: 100, height: 100, resizeMode: 'cover', overflow: 'hidden', borderRadius: 50, top: -40 }}>
+                                                <Image
+                                                    source={getimgurlwithID(item.ID)}
+                                                    style={{ width: 100, height: 100, resizeMode: 'cover' }}
+                                                />
+                                            </View>
+                                            <View style={{ top: -25, justifyContent: 'center' }}>
+                                                <Text style={{ fontSize: 18, fontWeight: '600', justifyContent: 'center', alignItems: 'center' }}>
+                                                    {item.Name}
+                                                </Text>
+                                            </View>
+                                            <View style={{ top: -15 }}>
+                                                <Text style={{ fontSize: 18, fontWeight: '700', color: '#FA4A0C' }}>
+                                                    {getPriceWithID(item.ID)}đ
+                                                </Text>
+                                            </View>
+                                        </View>
+                                    </TouchableOpacity>
+                                )
+                            }}
+                            numColumns={2}
+                            style={{ paddingLeft: 30, paddingTop: 30 }}
+                            keyExtractor={(item) => item.ID}
                         />
-                        <View style={{ top: -25 }}>
-                            <Text style={{ fontSize: 18, fontWeight:'650' }}>
-                                Mỳ
-                            </Text>
-                        </View>
-                        <View style={{ top: -15 }}>
-                            <Text style={{ fontSize: 18, fontWeight: 700, color: '#FA4A0C' }}>
-                                20000 đ
-                            </Text>
-                        </View>
-                    </View> */}
-                    <FlatList
-                        data={allItem}
-                        renderItem={({ item, index }) => {
-                            return (
-                                <TouchableOpacity onPress={() => { navigation.navigate('Fooditemdetails', { ID: item.id }) }}>
-                                    <View style={[{ marginTop: 40, height: 160, width: 140, borderRadius: 15, backgroundColor: 'white', justifyContent: 'space-evenly', alignItems: 'center', margin: 10 }, styles.shadowEff, index % 2 == 1 ? styles.oddnumitem : null, index == allItem.length - 1 ? styles.lastITemStyle : null]}>
-                                        <View style={{ width: 100, height: 100, resizeMode: 'cover', overflow: 'hidden', borderRadius: 50, top: -40 }}>
-                                            <Image
-                                                source={item.imgurl}
-                                                style={{ width: 100, height: 100, resizeMode: 'cover' }}
-                                            />
-                                        </View>
-                                        <View style={{ top: -25, justifyContent: 'center' }}>
-                                            <Text style={{ fontSize: 18, fontWeight: '600', justifyContent: 'center', alignItems: 'center' }}>
-                                                {item.Name}
-                                            </Text>
-                                        </View>
-                                        <View style={{ top: -15 }}>
-                                            <Text style={{ fontSize: 18, fontWeight: '700', color: '#FA4A0C' }}>
-                                                20000 đ
-                                            </Text>
-                                        </View>
-                                    </View>
-                                </TouchableOpacity>
-                            )
-                        }}
-                        numColumns={2}
-                        style={{ paddingLeft: 30, paddingTop: 30 }}
-                        keyExtractor={(item) => item.id}
-                    />
 
+                        : null}
                     {/* end of one item */}
                 </SafeAreaView>
                 {/* end of all product item  */}

@@ -14,7 +14,7 @@ const FoodDetailsScreen = ({navigation, route }) => {
     const fetchData = () => {
         setItemInfo(productsData[ID-1])
     }
-    const {curentUser} = useContext(AuthContext)
+    const {curentUser,setRefresh,refresh} = useContext(AuthContext)
     const [mainData,setMainData]= useState([])
     const [allFav,setAllFav]= useState([])
     // lấy "link" 
@@ -29,7 +29,8 @@ const FoodDetailsScreen = ({navigation, route }) => {
             setIsfav(false)
             if(curentUser)deleteFav(curentUser[0].id,ID)
         }
-
+        setRefresh(!refresh)
+        // console.log('refresh change')
     }
 
 
@@ -87,17 +88,16 @@ const FoodDetailsScreen = ({navigation, route }) => {
                     if(item.itemID==ID){
                         console.log('update: ',item.amount+1)
                         updateCart(curentUser[0].id,ID,Number(item.amount)+1)
-                        getCart(curentUser[0].id,[tempData,setTempData])
+                        // getCart(curentUser[0].id,[tempData,setTempData])
                         alert('đã thêm 1 sản phẩm cùng tên vào giỏ hàng')
                         isInCart=true
                     }
-                    if(!isInCart){
-                        createCart(curentUser[0].id,ID)
-                        getCart(curentUser[0].id,[tempData,setTempData])
-                        
-                        alert('đã thêm 1 sản phẩm  vào giỏ hàng')
-                    }
                 })
+                if(!isInCart){
+                    createCart(curentUser[0].id,ID)
+                    alert('đã thêm 1 sản phẩm  vào giỏ hàng')
+                }
+                getCart(curentUser[0].id,[tempData,setTempData])
             }
         }
     }
