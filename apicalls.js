@@ -44,7 +44,9 @@ export const updateUserInfo = async (data) => {
                 email: data.email,
                 password: data.password,
                 name: data.Name,
-                username:data.userName
+                username: data.userName,
+                phonenum: data.phonenumber,
+                address: data.address
             })
             .then((res) => {
                 console.log("user have been create")
@@ -60,33 +62,8 @@ export const updateUserInfo = async (data) => {
 // phone num section
 
 
-export const updatePhoneNum = async (ID, desc) => {
-    try {
-        axios.post(`http://10.0.2.2//food-app-api/phonenum/update.php`, { userID: ID, des: desc })
-            .then((res) => {
-                console.log("phone num has been edited")
-                // setdata(res.data)
-            })
-    } catch (err) {
-
-    }
-}
-export const createPhoneNum = async (ID, desc) => {//ID là user ID desc là sđt của user 
-    try {
-        axios.post(`http://10.0.2.2//food-app-api/phonenum/create.php`, { userID: ID, des: desc })
-            .then((res) => {
-                console.log("phone num has been added")
-                // setdata(res.data)
-            })
-    } catch (err) {
-
-    }
-}
-
-
-
 // fav option
-export const createFav = async (userID,itemID) => {//ID là user ID desc là sđt của user 
+export const createFav = async (userID, itemID) => {//ID là user ID desc là sđt của user 
     try {
         axios.post(`http://10.0.2.2//food-app-api/fav/create.php`, { userID: userID, itemID: itemID })
             .then((res) => {
@@ -97,13 +74,13 @@ export const createFav = async (userID,itemID) => {//ID là user ID desc là sđ
 
     }
 }
-export const getFav = async (userID,[data, setdata]) => {//ID là user ID desc là sđt của user 
-    
+export const getFav = async (userID, [data, setdata]) => {//ID là user ID desc là sđt của user 
+
     try {
-        axios.post(`http://10.0.2.2//food-app-api/fav/read.php`, { userID: userID})
+        axios.post(`http://10.0.2.2//food-app-api/fav/read.php`, { userID: userID })
             .then((res) => {
                 console.log("fav num has been calls: ", res.data)
-                if(res.data!='none'){
+                if (res.data != 'none') {
                     console.log('there is a res')
                     setdata(res.data)
                 }
@@ -113,7 +90,7 @@ export const getFav = async (userID,[data, setdata]) => {//ID là user ID desc l
 
     }
 }
-export const deleteFav = async (userID,itemID) => {//ID là user ID desc là sđt của user 
+export const deleteFav = async (userID, itemID) => {//ID là user ID desc là sđt của user 
     try {
         axios.post(`http://10.0.2.2//food-app-api/fav/delete.php`, { userID: userID, itemID: itemID })
             .then((res) => {
@@ -130,7 +107,7 @@ export const deleteFav = async (userID,itemID) => {//ID là user ID desc là sđ
 
 
 //  cart
-export const createCart = async (userID,itemID) => {//ID là user ID desc là sđt của user 
+export const createCart = async (userID, itemID) => {//ID là user ID desc là sđt của user 
     try {
         axios.post(`http://10.0.2.2//food-app-api/cart/create.php`, { userID: userID, itemID: itemID })
             .then((res) => {
@@ -141,7 +118,7 @@ export const createCart = async (userID,itemID) => {//ID là user ID desc là s�
 
     }
 }
-export const deleteCart = async (userID,itemID) => {//ID là user ID desc là sđt của user 
+export const deleteCart = async (userID, itemID) => {//ID là user ID desc là sđt của user 
     try {
         axios.post(`http://10.0.2.2//food-app-api/cart/delete.php`, { userID: userID, itemID: itemID })
             .then((res) => {
@@ -152,9 +129,9 @@ export const deleteCart = async (userID,itemID) => {//ID là user ID desc là s�
 
     }
 }
-export const updateCart = async (userID,itemID,amount) => {//ID là user ID desc là sđt của user 
+export const updateCart = async (userID, itemID, amount) => {//ID là user ID desc là sđt của user 
     try {
-        axios.post(`http://10.0.2.2//food-app-api/cart/update.php`, { userID: userID, itemID: itemID,amount:amount })
+        axios.post(`http://10.0.2.2//food-app-api/cart/update.php`, { userID: userID, itemID: itemID, amount: amount })
             .then((res) => {
                 console.log("fav num has been added")
                 // setdata(res.data)
@@ -163,12 +140,52 @@ export const updateCart = async (userID,itemID,amount) => {//ID là user ID desc
 
     }
 }
-export const getCart = async (userID,[data,setdata]) => {//ID là user ID desc là sđt của user 
+export const getCart = async (userID, [data, setdata]) => {//ID là user ID desc là sđt của user 
     try {
-        axios.post(`http://10.0.2.2//food-app-api/cart/read.php`, { userID: userID})
+        axios.post(`http://10.0.2.2//food-app-api/cart/read.php`, { userID: userID })
             .then((res) => {
                 console.log("fav num has been added")
-                if(res.data!='none')setdata(res.data)
+                if (res.data != 'none') setdata(res.data)
+            })
+    } catch (err) {
+
+    }
+}
+
+
+// orders
+
+
+export const createOrder = async (userID, addressID, phonenumID, status,des,OrderInfo,Total) => {//ID là user ID desc là sđt của user 
+    try {
+        axios.post(`http://10.0.2.2//food-app-api/order/create.php`, {
+            userID: userID,
+            addressID: addressID,
+            phonenumID: phonenumID,
+            status: status,
+            des:des,
+            OrderInfo:OrderInfo,
+            Total:Total
+        })
+            .then((res) => {
+                if (res.data != 'none') {
+                    // console.log('there is a res')
+                    setdata(res.data)
+                }
+            })
+    } catch (err) {
+
+    }
+}
+export const getOrder = async (userID,[data,setData]) => {//ID là user ID desc là sđt của user 
+    try {
+        axios.post(`http://10.0.2.2//food-app-api/order/read.php`, {
+            userID: userID,
+        })
+            .then((res) => {
+                if(res.data!='none')
+               { console.log("order num has been get")
+                setData(res.data)}
             })
     } catch (err) {
 

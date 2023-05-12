@@ -96,7 +96,7 @@ const LoginRegisterScreen = ({navigation}) => {
           <TouchableOpacity onPress={() => { setLoginLogout([true, false]) }}>
             <View style={[{ height: 50, width: 140, justifyContent: 'center', alignItems: 'center' }, LoginlogOut[0] ? styles.BorderBottom : null]}>
               <Text style={{ fontSize: 20, fontWeight: 600 }}>
-                Login:{tempCookies ? tempCookies : 'nothig'}
+                Login
               </Text>
             </View>
           </TouchableOpacity>

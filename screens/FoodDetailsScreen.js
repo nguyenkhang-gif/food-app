@@ -100,6 +100,7 @@ const FoodDetailsScreen = ({navigation, route }) => {
                 getCart(curentUser[0].id,[tempData,setTempData])
             }
         }
+        setRefresh(!refresh)
     }
 
 

@@ -16,6 +16,8 @@ import CheckoutScreen from './screens/CheckoutScreen';
 import { AuthContextProvider } from './context/authcontext';
 import EditUserInfoScreen from './screens/EditUserInfoScreen';
 import FavScreen from './screens/FavScreen';
+import AllOrderScreen from './screens/UsersOrderScreen';
+import OrderDetailSceen from './screens/OrderDetailSceen';
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -62,13 +64,15 @@ export default function App() {
       }}>
         {/* làm footer cho screen nào ? */}
         <Stack.Screen name='main' component={BottomTab}/>
-        <Stack.Screen name="Home" component={HomeScreen} />
+        {/* <Stack.Screen name="Home" component={HomeScreen} /> */}
         <Stack.Screen name="Loginregisterscreen" component={LoginRegisterScreen} />
         <Stack.Screen name="SearchProduct" component={SeachProbuctScreen} />
         <Stack.Screen name="Cartscreen" component={CartScreen} />
         <Stack.Screen name="Fooditemdetails" component={FoodDetailsScreen} />
         <Stack.Screen name="Checkout" component={CheckoutScreen} />
-        <Stack.Screen name="Profile" component={ProfileScreen} />
+        <Stack.Screen name="allOrder" component={AllOrderScreen} />
+        <Stack.Screen name="orderDetail" component={OrderDetailSceen} />
+        {/* <Stack.Screen name="Profile" component={ProfileScreen} /> */}
         <Stack.Screen name="editProfile" component={EditUserInfoScreen} />
       </Stack.Navigator>
     </NavigationContainer>

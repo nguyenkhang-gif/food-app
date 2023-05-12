@@ -97,8 +97,23 @@ export const AuthContextProvider = ({ children }) => {
         // console.log('this is the shit')
     }, [curentUser])
     const [refresh,setRefresh]= useState(false)
-  
-    return <AuthContext.Provider value={{ curentUser, login, logout,setCurentUser,refresh,setRefresh }}>
+    const [OrderRefresh,setOrderRefresh]= useState(false)
+    // const refreshLoop = setInterval(()=>{
+
+    // },1000)
+    useEffect(() => {
+        const interval = setInterval(() => {
+        //   console.log('This will run every second!');
+          setOrderRefresh(!OrderRefresh)
+        //   setRefresh(!refresh)
+        //   setRefresh(!refresh)
+        }, 1000);
+        return () => clearInterval(interval);
+      }, [OrderRefresh]);
+    //   useEffect(()=>{
+    //     console.log("order refresh")
+    //   },[OrderRefresh])
+    return <AuthContext.Provider value={{ curentUser, login, logout,setCurentUser,refresh,setRefresh,OrderRefresh,setOrderRefresh }}>
         {children}
     </AuthContext.Provider>
 }

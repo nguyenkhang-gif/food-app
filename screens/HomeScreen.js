@@ -16,7 +16,16 @@ import { AuthContext } from '../context/authcontext';
 
 const HomeScreen = ({ navigation }) => {
 
-    const { curentUser,refresh} = useContext(AuthContext)
+
+    // useEffect(() => {
+    //     const interval = setInterval(() => {
+    //       console.log('This will run every second!');
+
+    //     }, 1000);
+    //     return () => clearInterval(interval);
+    //   }, []);
+
+    const { curentUser,refresh,OrderRefresh} = useContext(AuthContext)
 
     const getimurlwithID = (ID) => {
         let temp
@@ -46,7 +55,7 @@ const HomeScreen = ({ navigation }) => {
     useEffect(()=>{
         if(curentUser)getCart(curentUser[0].id,[allCart,setAllCart])
     },[curentUser,refresh])
-
+    
     return (
         <SafeAreaView style={{ flex: 1 }}>
             {/* container all */}
@@ -68,7 +77,7 @@ const HomeScreen = ({ navigation }) => {
                     </TouchableOpacity>
                     <View style={{position:'absolute',right:5,top:18,borderRadius:20,width:30,justifyContent:'center',alignItems:'center'}}>
                         <Text style={{fontSize:20,fontWeight:'700',color:"#FA4A0C",zIndex:2}}>
-                            {allCart.length}
+                            {allCart?.length}
                         </Text>
                     </View>
                     <TouchableOpacity onPress={() => { navigation.navigate('Cartscreen') }}>
@@ -103,7 +112,7 @@ const HomeScreen = ({ navigation }) => {
                 <View>
                     {/* catagory navbar */}
                     <View style={{ marginLeft: 30, marginTop: 20, flexDirection: 'row' }}>
-                        <TouchableOpacity>
+                        {/* <TouchableOpacity>
                             <View style={{ paddingHorizontal: 20, paddingBottom: 10, borderColor: '#FA4A0C', borderBottomWidth: 2 }}>
                                 <Text style={{ color: '#FA4A0C' }}>Foods</Text>
                             </View>
@@ -117,7 +126,7 @@ const HomeScreen = ({ navigation }) => {
                             <View style={{ paddingHorizontal: 20, paddingBottom: 10 }}>
                                 <Text style={{ opacity: 0.8 }}>Snack</Text>
                             </View>
-                        </TouchableOpacity>
+                        </TouchableOpacity> */}
                     </View>
                     {/* end of catagory navbar  */}
                 </View>

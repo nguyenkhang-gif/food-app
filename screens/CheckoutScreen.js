@@ -1,13 +1,16 @@
-import { View, Text, TouchableOpacity, ScrollView ,CheckBox} from 'react-native'
+import { View, Text, TouchableOpacity, ScrollView, CheckBox, StyleSheet } from 'react-native'
 import { AntDesign } from '@expo/vector-icons';
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { userInfo, alluserAdress } from '../db.js'
 import { TextInput } from 'react-native-gesture-handler';
 import Checkbox from '../component/Checkbox.js';
+import { AuthContext } from '../context/authcontext.js';
+import { createOrder, deleteCart } from '../apicalls.js';
 const CheckoutScreen = ({ navigation, route, mainData }) => {
     // user
     const [user, setUser] = useState()
-
+    const data = route.params.mainData
+    const { curentUser, logout, refresh, setRefresh } = useContext(AuthContext)
 
     // sử lý lấy địa chỉ bằng ID
     const getAddressWithID = (ID) => {
@@ -20,13 +23,18 @@ const CheckoutScreen = ({ navigation, route, mainData }) => {
 
         return temp
     }
-
+    const clearCart=()=>{
+        data.forEach(item=>{
+            deleteCart(curentUser[0].id,item.itemID)
+        })
+    }
     // sử lý check or uncheck
-    const [deliveryPickup,setDeliveryPickup]= useState([true,false])
+    const [deliveryPickup, setDeliveryPickup] = useState([true, false])
 
 
     useEffect(() => {
         setUser(userInfo[0])
+        console.log(JSON.stringify(route.params.mainData))
     }, [])
 
     return (
@@ -84,7 +92,7 @@ const CheckoutScreen = ({ navigation, route, mainData }) => {
                     }}  >
                         Address detail
                     </Text>
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
                         <Text style={{
                             fontSize: 16,
                             fontWeight: '600',
@@ -96,17 +104,19 @@ const CheckoutScreen = ({ navigation, route, mainData }) => {
                 </View>
                 {/* end of Address detail and change */}
                 {/* user name adress phone Number */}
-                <View style={{ backgroundColor: 'white', padding: 10, borderRadius: 27, marginTop: 10 }}>
-                    <Text style={{ margin: 10, paddingBottom: 10, borderBottomColor: '#000000', borderBottomWidth: 0.5, marginHorizontal: 20, fontSize: 20 }}>
-                        {user?.Name}
-                    </Text>
-                    <Text style={{ margin: 10, paddingBottom: 10, borderBottomColor: '#000000', borderBottomWidth: 0.5, marginHorizontal: 20, fontSize: 20 }}>
-                        {user ? getAddressWithID(user.ID) : null}
-                    </Text>
-                    <Text style={{ margin: 10, paddingBottom: 10, marginHorizontal: 20, fontSize: 20 }}>
-                        {user?.PhoneNum}
-                    </Text>
-                </View>
+                {curentUser ?
+                    <View style={{ backgroundColor: 'white', padding: 10, borderRadius: 27, marginTop: 10 }}>
+                        <Text style={{ margin: 10, paddingBottom: 10, borderBottomColor: '#000000', borderBottomWidth: 0.5, marginHorizontal: 20, fontSize: 20 }}>
+                            {curentUser[0].Name}
+                        </Text>
+                        <Text style={{ margin: 10, paddingBottom: 10, borderBottomColor: '#000000', borderBottomWidth: 0.5, marginHorizontal: 20, fontSize: 20 }}>
+                            {curentUser[0].addressDes}
+                        </Text>
+                        <Text style={{ margin: 10, paddingBottom: 10, marginHorizontal: 20, fontSize: 20 }}>
+                            {curentUser[0].phonDes}
+                        </Text>
+                    </View>
+                    : null}
                 {/* end of user name adress phone Number */}
 
 
@@ -123,29 +133,53 @@ const CheckoutScreen = ({ navigation, route, mainData }) => {
                 {/* end of  header delivery method */}
 
                 {/* Door delivery or Pick up */}
-                    <View style={{backgroundColor:'white',borderRadius:27}}>
-                        <View style={{flexDirection:'row', margin:20,alignItems:'center',marginTop:30,paddingBottom:20,borderBottomColor: '#000000', borderBottomWidth: 0.5}}>
-                            <Checkbox checked={deliveryPickup[0]} onchange={()=>{setDeliveryPickup([true,false])}}/>
-                            <Text style={{marginLeft:30,fontSize:20,fontWeight:'600'}}>
-                                Giao tận nhà
-                            </Text>
-                        </View>
-                        <View style={{flexDirection:'row', margin:20,alignItems:'center',marginVertical:10,paddingBottom:20}}>
-                            <Checkbox checked={deliveryPickup[1]} onchange={()=>{setDeliveryPickup([false,true])}}/>
-                            <Text style={{marginLeft:30,fontSize:20,fontWeight:'600'}}>
-                                Nhận tại cửa hàng
-                            </Text>
-                        </View>
+                <View style={{ backgroundColor: 'white', borderRadius: 27 }}>
+                    <View style={{ flexDirection: 'row', margin: 20, alignItems: 'center', marginTop: 30, paddingBottom: 20, borderBottomColor: '#000000', borderBottomWidth: 0.5 }}>
+                        <Checkbox checked={deliveryPickup[0]} onchange={() => { setDeliveryPickup([true, false]) }} />
+                        <Text style={{ marginLeft: 30, fontSize: 20, fontWeight: '600' }}>
+                            Giao tận nhà
+                        </Text>
                     </View>
+                    <View style={{ flexDirection: 'row', margin: 20, alignItems: 'center', marginVertical: 10, paddingBottom: 20 }}>
+                        <Checkbox checked={deliveryPickup[1]} onchange={() => { setDeliveryPickup([false, true]) }} />
+                        <Text style={{ marginLeft: 30, fontSize: 20, fontWeight: '600' }}>
+                            Nhận tại cửa hàng
+                        </Text>
+                    </View>
+                </View>
                 {/* end of  Door delivery or Pick up */}
 
                 {/* end of delivery methods */}
 
             </ScrollView>
             {/* end of main */}
+            <View style={{ alignItems: 'center', paddingBottom: 10 }}>
+                <View style={{ margin: 10 }}>
+                    <Text>
+                        Tổng tiền: {route.params.total ? route.params.total : 0} đ
+                    </Text>
+                </View>
+                {/* createOrder(curentUser[0].id,curentUser[0].addressDes,curentUser[0].phonDes,'on Going','',JSON.stringify(route.params.mainData),route.params.total) */}
+                <TouchableOpacity onPress={() => {
+                    console.log(`create order :${JSON.stringify(route.params.mainData)} and total: ${route.params.total}`); 
+                    createOrder(curentUser[0].id, curentUser[0].addressDes, curentUser[0].phonDes, 'on Going', '', JSON.stringify(route.params.mainData), route.params.total);
+                    clearCart()
+                    setRefresh(!refresh)
+                    alert('đặt thành công bạn có thể vào phần orders để check tiến độ')
+                    navigation.navigate('homescreen')
+                }}>
+                    <View style={[{ width: 300, height: 50, backgroundColor: '#FA4A0C', borderRadius: 40, justifyContent: 'center', alignItems: 'center' }, styles.buttonShadowEff]}>
+                        <Text style={{ color: '#F6F6F9', fontSize: 18, fontWeight: 600 }}>
+                            xác nhận
+                        </Text>
+                    </View>
+                </TouchableOpacity>
+            </View>
             {/* <Text>CheckoutScreen</Text> */}
         </View>
     )
 }
 
 export default CheckoutScreen
+
+const styles = StyleSheet.create({})

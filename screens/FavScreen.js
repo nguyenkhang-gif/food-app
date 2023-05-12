@@ -8,7 +8,7 @@ import { getCart } from '../apicalls.js';
 import { AuthContext } from '../context/authcontext.js';
 const FavScreen = ({ navigation, route }) => {
     const {curentUser} = useContext(AuthContext)
-    const {refresh} = useContext(AuthContext)
+    const {refresh,setRefresh} = useContext(AuthContext)
     const [mainData, setMainData] = useState([])
     const [productsData2,setProductData2] = useState([])
     // sử lý lấy thông tin từ cart để render
@@ -61,6 +61,7 @@ const FavScreen = ({ navigation, route }) => {
     const handleDelete = (itemID)=>{
         deleteFav(curentUser[0].id,itemID)
         getFav(curentUser[0].id,[mainData, setMainData])
+        setRefresh(!refresh)
     }
 
     return (

@@ -6,11 +6,10 @@ import { Entypo } from '@expo/vector-icons';
 import { AuthContext } from '../context/authcontext';
 import EditUserInfoScreen from './EditUserInfoScreen';
 
-
 const ProfileScreen = ({navigation}) => {
     // lấy user info 
     const [userInfo, setUserInfo] = useState()
-    const { curentUser,logout } = useContext(AuthContext)
+    const { curentUser,logout,refresh, setRefresh } = useContext(AuthContext)
     useEffect(() => {
         setUserInfo(profile[0])
         // setOpenUpdate(false)
@@ -25,7 +24,7 @@ const ProfileScreen = ({navigation}) => {
                     {/* Header */}
                     <View style={{ flexDirection: 'row', height: 26, marginTop: 20, marginBottom: 20, position: 'relative' }}>
                         <TouchableOpacity style={{ position: 'absolute', left: 20 }}>
-                            <AntDesign name="left" size={24} color="black" />
+                            {/* <AntDesign name="left" size={24} color="black" />    */}
                         </TouchableOpacity>
                         <View style={{ width: '100%', justifyContent: 'center', alignItems: 'center' }}>
                             <Text style={{ fontSize: 20, fontWeight: '700' }}>
@@ -66,7 +65,7 @@ const ProfileScreen = ({navigation}) => {
 
                     {/* Orders and review pending */}
                     <View>
-                        <TouchableOpacity>
+                        <TouchableOpacity onPress={()=>{navigation.navigate('allOrder')}}>
                             <View style={[{ flexDirection: 'row', height: 50, backgroundColor: 'white', marginTop: 20, marginHorizontal: 20, alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 20, borderRadius: 20 }, styles.shadowEff]}>
                                 <Text style={{ fontSize: 16, fontWeight: '500' }}>
                                     Orders
@@ -74,19 +73,19 @@ const ProfileScreen = ({navigation}) => {
                                 <Entypo name="chevron-right" size={24} color="black" />
                             </View>
                         </TouchableOpacity>
-                        <TouchableOpacity>
+                        {/* <TouchableOpacity>
                             <View style={[{ flexDirection: 'row', height: 50, backgroundColor: 'white', marginTop: 20, marginHorizontal: 20, alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 20, borderRadius: 20 }, styles.shadowEff]}>
                                 <Text style={{ fontSize: 16, fontWeight: '500' }}>
                                     pending review
                                 </Text>
                                 <Entypo name="chevron-right" size={24} color="black" />
                             </View>
-                        </TouchableOpacity>
+                        </TouchableOpacity> */}
                     </View>
                     {/* end of Orders and review pending */}
                     {/* update button */}
                     <View style={{ justifyContent: 'center', flex: 1, alignItems: 'center' }}>
-                        <TouchableOpacity onPress={()=>{navigation.navigate('editProfile')}}>
+                        <TouchableOpacity onPress={()=>{navigation.navigate('editProfile');setRefresh(!refresh)}}>
                             <View style={[{ width: 300, height: 50, backgroundColor: '#FA4A0C', borderRadius: 40, justifyContent: 'center', alignItems: 'center' }, styles.buttonShadowEff]}>
                                 <Text style={{ color: '#F6F6F9', fontSize: 18, fontWeight: 600 }}>
                                     Update
